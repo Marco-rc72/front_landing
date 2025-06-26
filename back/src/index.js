@@ -13,7 +13,6 @@ app.use((req, res, next) => {
 app.use(express.json()); // Para parsear JSON en las requests
 
 app.use('/api/usuarios', usuarioRoutes);
-
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`)

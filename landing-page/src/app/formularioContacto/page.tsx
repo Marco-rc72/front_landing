@@ -6,7 +6,8 @@ export default function Formulario() {
     nombre_completo: '',
     correo: '',
     telefono: '',
-    mensaje: ''
+    mensaje: '',
+      acepta_terminos: false, 
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -37,7 +38,8 @@ export default function Formulario() {
           nombre_completo: '',
           correo: '',
           telefono: '',
-          mensaje: ''
+          mensaje: '',
+          acepta_terminos: false,
         });
       }
     } catch (error) {
@@ -114,6 +116,21 @@ export default function Formulario() {
             </div>
 
             <div>
+            <div className="flex items-start">
+  <input
+    type="checkbox"
+    id="acepta_terminos"
+    name="acepta_terminos"
+    checked={formData.acepta_terminos}
+    onChange={handleChange}
+    required
+    className="mr-2 mt-1 mb-4"
+  />
+  <label htmlFor="acepta_terminos" className="text-sm">
+    Acepto los <a href="/Terminos" className="underline text-blue-400" target="_blank">términos y condiciones</a>
+  </label>
+</div>
+
               <button
                 type="submit"
                 className="w-full bg-white text-black py-3 px-4 rounded-sm font-bold hover:bg-gray-300 transition-colors duration-200"
