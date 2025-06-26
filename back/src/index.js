@@ -1,6 +1,6 @@
 const express = require('express');
 const usuarioRoutes = require('./routes/usuarioRoutes');
-
+const termsRoutes = require('./routes/termsRoutes');
 const app = express();
 
 app.use((req, res, next) => {
@@ -13,6 +13,8 @@ app.use((req, res, next) => {
 app.use(express.json()); // Para parsear JSON en las requests
 
 app.use('/api/usuarios', usuarioRoutes);
+app.use('/api', termsRoutes);
+
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
