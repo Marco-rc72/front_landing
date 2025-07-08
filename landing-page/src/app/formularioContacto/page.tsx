@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
+ 
 
 type FormData = {
   nombre_completo: string;
@@ -9,10 +10,12 @@ type FormData = {
   telefono: string;
   mensaje: string;
   token: string;
-  Terminos: boolean;
+  aceptaTerminos: boolean;
 };
 
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_KEY!;
+
+console.log("Contenido de Recaptcha", JSON.stringify(RECAPTCHA_SITE_KEY));
 
 export default function Formulario() {
   const [formData, setFormData] = useState<FormData>({
@@ -21,7 +24,7 @@ export default function Formulario() {
     telefono: "",
     mensaje: "",
     token: "",
-    Terminos: false,
+    aceptaTerminos: false,
   });
 
   const [error, setError] = useState("");
@@ -74,7 +77,7 @@ export default function Formulario() {
           telefono: "",
           mensaje: "",
           token: "",
-          Terminos: false,
+          aceptaTerminos: false,
         });
         recaptchaRef.current?.reset();
       } else {
@@ -156,17 +159,17 @@ export default function Formulario() {
             <div className="flex items-start">
               <input
                 type="checkbox"
-                id="Terminos"
-                name="Terminos"
-                checked={formData.Terminos}
+                id="aceptaTerminos"
+                name="aceptaTerminos"
+                checked={formData.aceptaTerminos}
                 onChange={handleChange}
                 required
                 className="mr-2 mt-1 mb-4"
               />
-              <label htmlFor="Terminos" className="text-sm">
+              <label htmlFor="aceptaTerminos" className="text-sm">
                 Acepto los{" "}
                 <a
-                  href="/Terminos"
+                  href="/aceptaTerminos"
                   className="underline text-blue-400"
                   target="_blank"
                 >
