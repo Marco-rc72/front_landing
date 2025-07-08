@@ -2,6 +2,7 @@ const express = require('express');
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const termsRoutes = require('./routes/termsRoutes');
 const app = express();
+require('dotenv').config();
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*'); // Permite todos los orígenes (*)
@@ -14,7 +15,6 @@ app.use(express.json()); // Para parsear JSON en las requests
 
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api', termsRoutes);
-
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

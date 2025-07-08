@@ -8,8 +8,11 @@ type FormData = {
   correo: string;
   telefono: string;
   mensaje: string;
-  acepta_terminos: boolean;
+  token: string;
+  Terminos: boolean;
 };
+
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!;
 
 export default function Formulario() {
   const [formData, setFormData] = useState<FormData>({
@@ -17,55 +20,69 @@ export default function Formulario() {
     correo: "",
     telefono: "",
     mensaje: "",
-    acepta_terminos: false,
+    token: "",
+    Terminos: false,
   });
 
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const target = e.target as HTMLInputElement;
-    const { name, type, value } = target;
-    const checked = type === "checkbox" ? target.checked : undefined;
-
+    const { name, type, value, checked } = e.target as HTMLInputElement;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked! : value,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const handleRecaptchaChange = (token: string | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      token: token || "",
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
 
-    const token = await recaptchaRef.current?.executeAsync();
-    recaptchaRef.current?.reset();
+    if (!formData.token) {
+      setError("Por favor completa el reCAPTCHA.");
+      return;
+    }
+
+    console.log("🛫 Enviando datos al backend:", formData);
 
     try {
       const response = await fetch("http://localhost:3001/api/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, recaptchaToken: token }),
+        body: JSON.stringify(formData),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        alert("Mensaje enviado con éxito");
+        setSuccess("Mensaje enviado con éxito.");
         setFormData({
           nombre_completo: "",
           correo: "",
           telefono: "",
           mensaje: "",
-          acepta_terminos: false,
+          token: "",
+          Terminos: false,
         });
+        recaptchaRef.current?.reset();
       } else {
-        setError("Fallo la verificación de reCAPTCHA");
+        setError(result.error || "Fallo en la verificación.");
       }
     } catch (error) {
-      console.error("Error:", error);
-      setError("Error al enviar los datos");
+      console.error("❌ Error al enviar:", error);
+      setError("Hubo un error al enviar el formulario.");
     }
   };
 
@@ -76,6 +93,7 @@ export default function Formulario() {
           <h2 className="text-3xl font-extrabold text-center font-serif mb-8">
             Únete a la familia
           </h2>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="nombre_completo" className="block text-sm mb-1">
@@ -132,20 +150,20 @@ export default function Formulario() {
                 value={formData.mensaje}
                 onChange={handleChange}
                 className="w-full px-4 py-3 bg-gray-900 border border-gray-700 rounded-sm focus:outline-none focus:border-white"
-              ></textarea>
+              />
             </div>
 
             <div className="flex items-start">
               <input
                 type="checkbox"
-                id="acepta_terminos"
-                name="acepta_terminos"
-                checked={formData.acepta_terminos}
+                id="Terminos"
+                name="Terminos"
+                checked={formData.Terminos}
                 onChange={handleChange}
                 required
                 className="mr-2 mt-1 mb-4"
               />
-              <label htmlFor="acepta_terminos" className="text-sm">
+              <label htmlFor="Terminos" className="text-sm">
                 Acepto los{" "}
                 <a
                   href="/Terminos"
@@ -159,8 +177,8 @@ export default function Formulario() {
 
             <ReCAPTCHA
               ref={recaptchaRef}
-              sitekey="6Lc67m4rAAAAAGxw0wB5BZ5LhixDP5clzSQik8JX"
-              size="invisible"
+              sitekey={RECAPTCHA_SITE_KEY}
+              onChange={handleRecaptchaChange}
             />
 
             <button
@@ -169,6 +187,8 @@ export default function Formulario() {
             >
               Enviar
             </button>
+
+            {success && <p className="text-green-400 text-sm mt-2">{success}</p>}
             {error && <p className="text-red-400 text-sm mt-2">{error}</p>}
           </form>
         </div>
