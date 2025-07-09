@@ -1,6 +1,8 @@
 const express = require('express');
+require('dotenv').config(); 
 const usuarioRoutes = require('./routes/usuarioRoutes');
 const termsRoutes = require('./routes/termsRoutes');
+const verificationsRoutes = require('./routes/verifcationRoutes')
 const app = express();
 require('dotenv').config();
 
@@ -15,6 +17,7 @@ app.use(express.json()); // Para parsear JSON en las requests
 
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api', termsRoutes);
+app.use('/api/verificacion/', verificationsRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
