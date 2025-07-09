@@ -13,6 +13,8 @@ type FormData = {
   aceptaTerminos: boolean;
 };
 
+//El token es generado por el Recaptcha.
+
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_KEY!;
 
 console.log("Contenido de Recaptcha", JSON.stringify(RECAPTCHA_SITE_KEY));
