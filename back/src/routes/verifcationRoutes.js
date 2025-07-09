@@ -35,11 +35,8 @@ router.get('/verify-email', async (req, res) => {
     //   [token]
     // );
 
-    // 4. Respuesta exitosa
-    return res.send(`
-      <h1>¡Verificación exitosa!</h1>
-      <p>El token fue validado correctamente.</p>
-    `);
+      return res.redirect(302, 'http://localhost:3000/paginaPostCorreo');
+
 
   } catch (error) {
     console.error('Error en verify-email:', error);
