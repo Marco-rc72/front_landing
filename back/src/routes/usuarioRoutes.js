@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
 
     // Generar token de verificación
     const tokenCorreo = crypto.randomBytes(8).toString('hex');
-    console.log('🔐 Token de correo generado:', tokenCorreo);
+    // console.log('🔐 Token de correo generado:', tokenCorreo);
 
     // Insertar en la base de datos
     const [result] = await pool.execute(
