@@ -1,45 +1,33 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 1. Habilitar páginas en la raíz del proyecto
-  pageExtensions: ['page.tsx', 'page.ts', 'tsx', 'ts'], 
+  // Configuración básica
+  pageExtensions: ['page.tsx', 'page.ts', 'tsx', 'ts'],
+  output: 'standalone',
   
-  // 2. Configuración para manejar archivos en raíz como rutas
+  // Reescribe rutas para tu estructura
+  async rewrites() {
+    return [
+      { source: '/', destination: '/page' },
+      { source: '/contacto', destination: '/formularioContacto' },
+      { source: '/terminos', destination: '/Terminos' }
+    ];
+  },
+
+  // Configuración de Webpack para alias
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@/pages': process.cwd(), // Apunta a la raíz del proyecto
+      '@root': process.cwd()
     };
     return config;
   },
 
-  // 3. Reescribe rutas para archivos en raíz
-  async rewrites() {
-    return [
-      {
-        source: '/',
-        destination: '/page', // Mapea / a tu page.tsx
-      },
-      {
-        source: '/contacto',
-        destination: '/formularioContacto',
-      },
-      {
-        source: '/terminos',
-        destination: '/Terminos',
-      }
-    ]
-  },
-
-  // 4. Configuración experimental para soporte avanzado
+  // Elimina la sección 'experimental' o usa solo propiedades compatibles
   experimental: {
-    externalDir: true, // Permite archivos fuera del directorio estándar
-    serverComponentsExternalPackages: ['fs'], // Necesario para ciertas operaciones
-  },
-
-  // 5. Configuración para TypeScript
-  typescript: {
-    ignoreBuildErrors: true, // Temporal durante la transición
+    // Solo propiedades válidas en Next.js 15.x
+    externalDir: true,
+    optimizePackageImports: ['react-google-recaptcha']
   }
 };
 
