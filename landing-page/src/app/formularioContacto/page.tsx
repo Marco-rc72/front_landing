@@ -2,7 +2,6 @@
 
 import { useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
- 
 
 type FormData = {
   nombre_completo: string;
@@ -13,11 +12,29 @@ type FormData = {
   aceptaTerminos: boolean;
 };
 
-//El token es generado por el Recaptcha.
-
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_KEY!;
 
-console.log("Contenido de Recaptcha", JSON.stringify(RECAPTCHA_SITE_KEY));
+// Funciones de sanitización
+const sanitizeNombre = (input: string): string => {
+  // Permite letras, espacios y acentos
+  return input.replace(/[^a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]/g, '');
+};
+
+const sanitizeEmail = (input: string): string => {
+  // Validación básica de email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(input) ? input : '';
+};
+
+const sanitizeTelefono = (input: string): string => {
+  // Permite solo números
+  return input.replace(/\D/g, '');
+};
+
+const sanitizeMensaje = (input: string): string => {
+  // Elimina etiquetas HTML/scripts para prevenir XSS
+  return input.replace(/<[^>]*>?/gm, '');
+};
 
 export default function Formulario() {
   const [formData, setFormData] = useState<FormData>({
@@ -37,9 +54,28 @@ export default function Formulario() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, type, value, checked } = e.target as HTMLInputElement;
+    
+    let sanitizedValue = value;
+    
+    // Aplicar sanitización según el campo
+    switch (name) {
+      case 'nombre_completo':
+        sanitizedValue = sanitizeNombre(value);
+        break;
+      case 'correo':
+        sanitizedValue = value; // La validación se hará al enviar
+        break;
+      case 'telefono':
+        sanitizedValue = sanitizeTelefono(value);
+        break;
+      case 'mensaje':
+        sanitizedValue = sanitizeMensaje(value);
+        break;
+    }
+    
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : sanitizedValue,
     }));
   };
 
@@ -55,8 +91,19 @@ export default function Formulario() {
     setError("");
     setSuccess("");
 
+    // Validación de campos antes de enviar
     if (!formData.token) {
       setError("Por favor completa el reCAPTCHA.");
+      return;
+    }
+
+    if (!sanitizeEmail(formData.correo)) {
+      setError("Por favor ingresa un correo electrónico válido.");
+      return;
+    }
+
+    if (!formData.aceptaTerminos) {
+      setError("Debes aceptar los términos y condiciones.");
       return;
     }
 
@@ -66,7 +113,10 @@ export default function Formulario() {
       const response = await fetch("http://localhost:3001/api/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          mensaje: sanitizeMensaje(formData.mensaje) // Sanitización adicional al enviar
+        }),
       });
 
       const result = await response.json();
