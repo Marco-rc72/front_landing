@@ -5,7 +5,6 @@ const nextConfig: NextConfig = {
   pageExtensions: ['tsx', 'ts', 'page.tsx'],
 
   rewrites: async () => [
-    { source: '/', destination: '/page' },
     { source: '/contacto', destination: '/formularioContacto' },
     { source: '/terminos', destination: '/Terminos' }
   ],
