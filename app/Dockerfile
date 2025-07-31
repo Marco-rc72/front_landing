@@ -1,11 +1,12 @@
 FROM node:18
 
 WORKDIR /app
-COPY package*.json ./
+
+COPY app/package*.json ./
 RUN npm install
 
-COPY . .
+COPY app ./
 RUN npm run build
 
 EXPOSE 3000
-CMD ["node", ".next/standalone/server.js"]
+CMD ["npm", "start"]
