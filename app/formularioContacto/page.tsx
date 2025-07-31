@@ -48,7 +48,7 @@ export default function Formulario() {
 
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const recaptchaRef = useRef<any>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

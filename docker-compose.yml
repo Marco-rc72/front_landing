@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./back
+    ports:
+      - "10000:10000"
+    env_file:
+      - ./back/.env
+    depends_on:
+      - db
+    networks:
+      - mi_red
+
+  landing:
+    build: ./app
+    ports:
+      - "3000:3000"
+    networks:
+      - mi_red
+
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: tu_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - mi_red
+
+networks:
+  mi_red:
+    driver: bridge
+
+volumes:
+  mysql_data:
