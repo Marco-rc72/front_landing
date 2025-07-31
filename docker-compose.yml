@@ -13,9 +13,9 @@ services:
       - mi_red
 
   landing:
-    build: ./app
+    build: .
     ports:
-      - "3000:3000"
+      - "3139:3000"
     networks:
       - mi_red
 
