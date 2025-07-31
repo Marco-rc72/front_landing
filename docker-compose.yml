@@ -13,7 +13,7 @@ services:
       - mi_red
 
   landing:
-    build: ./app
+    build: ./front
     ports:
       - "3139:3000"
     networks:
