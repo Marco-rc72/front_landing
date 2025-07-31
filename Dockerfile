@@ -1,12 +1,11 @@
 FROM node:18
 
 WORKDIR /app
-
-COPY app/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-COPY app ./
+COPY . .
 RUN npm run build
 
 EXPOSE 3000
-CMD ["npm", "start"]
+CMD ["npx", "next", "start"]
