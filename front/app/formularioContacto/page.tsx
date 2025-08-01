@@ -110,7 +110,7 @@ export default function Formulario() {
     console.log("🛫 Enviando datos al backend:", formData);
 
     try {
-      const response = await fetch("http://localhost:10000/api/usuarios", {
+      const response = await fetch("http://123.456.789.123:3178/api/usuarios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
