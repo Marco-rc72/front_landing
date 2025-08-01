@@ -4,7 +4,7 @@ services:
   api:
     build: ./back
     ports:
-      - "10000:4010"
+      - "10000:10000"
     env_file:
       - ./back/.env
     depends_on:
