@@ -48,7 +48,7 @@ router.post('/', async (req, res) => {
     const tokenCorreo = crypto.randomBytes(8).toString('hex');
 
     const [result] = await pool.execute(
-      'INSERT INTO usuarios (nombre_completo, correo, telefono, mensaje, token, aceptaTerminos, tokenCorreo) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO usuarios (nombre_completo, correo, telefono, mensaje, token, acepta_terminos, tokenCorreo) VALUES (?, ?, ?, ?, ?, ?, ?)',
       [nombre_completo, correo, telefono, mensaje, token, acepta, tokenCorreo]
     );
 
